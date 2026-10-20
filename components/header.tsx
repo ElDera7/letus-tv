@@ -1,0 +1,172 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { YouTubeIcon, InstagramIcon, TikTokIcon, FacebookIcon } from "@/components/social-icons";
+
+type TickerItem = { title: string; href: string };
+
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/live", label: "Live TV" },
+  { href: "/breaking", label: "Breaking" },
+  { href: "/category/politics", label: "Politics" },
+  { href: "/category/business", label: "Business" },
+  { href: "/category/entertainment", label: "Entertainment" },
+  { href: "/category/sports", label: "Sports" },
+  { href: "/category/tech", label: "Tech" },
+  { href: "/category/health", label: "Health" },
+  { href: "/articles", label: "News" },
+  { href: "/videos", label: "Videos" },
+  { href: "/contact", label: "Contact" },
+];
+
+const SOCIALS = [
+  { label: "YouTube", url: "https://youtube.com/@letus-tv", Icon: YouTubeIcon },
+  { label: "Instagram", url: "https://www.instagram.com/letus_tv", Icon: InstagramIcon },
+  { label: "TikTok", url: "https://www.tiktok.com/@letustv", Icon: TikTokIcon },
+  { label: "Facebook", url: "https://www.facebook.com/share/14neP8cQQQV/", Icon: FacebookIcon },
+];
+
+function HamburgerIcon({ open }: { open: boolean }) {
+  if (open) {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6">
+        <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6">
+      <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function Header({
+  breaking,
+  siteName,
+}: {
+  breaking: TickerItem[];
+  siteName?: string;
+}) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const items = breaking.length > 0 ? breaking : null;
+
+  return (
+    <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b border-line">
+      <div className="container-page flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
+        <Link href="/" className="flex items-center shrink-0" onClick={() => setMobileOpen(false)}>
+          <Image
+            src="/images/logo.png"
+            alt={siteName ?? "Letus TV"}
+            width={1065}
+            height={369}
+            className="h-12 w-auto sm:h-14"
+            priority
+          />
+        </Link>
+
+        <nav className="hidden lg:flex items-center gap-5 font-display text-[0.88rem] font-bold text-blue-deep">
+          {NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-live transition-colors">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5">
+            {SOCIALS.map(({ label, url, Icon }) => (
+              <a
+                key={label}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-blue-deep text-paper transition-transform hover:scale-110 hover:bg-blue"
+              >
+                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </a>
+            ))}
+          </div>
+
+          <Link
+            href="/live"
+            className="flex items-center gap-2 rounded-sm bg-live px-3 py-1.5 text-paper font-display text-sm font-semibold"
+          >
+            <span className="h-2 w-2 rounded-full bg-paper animate-live-pulse" />
+            Live Now
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            className="flex h-9 w-9 items-center justify-center text-ink lg:hidden"
+          >
+            <HamburgerIcon open={mobileOpen} />
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <nav className="border-t border-line bg-paper lg:hidden">
+          <div className="container-page flex flex-col py-2">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="border-b border-line py-3 font-display text-sm font-bold text-blue-deep last:border-0 hover:text-live"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="flex items-center gap-2 py-3">
+              {SOCIALS.map(({ label, url, Icon }) => (
+                <a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-deep text-paper hover:bg-blue"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      )}
+
+      {items && (
+        <div className="border-t border-white/10 bg-blue-deep text-paper">
+          <div className="container-page flex items-center gap-3 py-2 overflow-hidden">
+            <span className="shrink-0 bg-live px-2 py-0.5 text-xs font-display font-bold tracking-wide rounded-sm">
+              BREAKING
+            </span>
+            <div className="relative flex-1 overflow-hidden">
+              <div className="flex w-max gap-16 animate-ticker whitespace-nowrap">
+                {[...items, ...items].map((item, i) => (
+                  <a
+                    key={`${item.href}-${i}`}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm hover:underline"
+                  >
+                    {item.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
