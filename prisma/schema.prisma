@@ -90,7 +90,7 @@ model Article {
   title          String
   slug           String         @unique
   excerpt        String?        @db.Text
-  body           String         @db.LongText
+  body           String         @db.Text
   featuredImage  String?
   publishedAt    DateTime?
   updatedAt      DateTime       @updatedAt
