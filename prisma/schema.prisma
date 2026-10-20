@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -53,7 +53,7 @@ model User {
   email        String   @unique
   passwordHash String
   role         UserRole @default(AUTHOR)
-  bio          String?
+  bio          String?  @db.Text
   avatarUrl    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -63,7 +63,7 @@ model Author {
   id        String    @id @default(cuid())
   name      String
   email     String?   @unique
-  bio       String?
+  bio       String?   @db.Text
   photoUrl  String?
   slug      String    @unique
   createdAt DateTime  @default(now())
@@ -75,7 +75,7 @@ model Category {
   id          String    @id @default(cuid())
   name        String
   slug        String    @unique
-  description String?
+  description String?   @db.Text
   imageUrl    String?
   color       String?
   isActive    Boolean   @default(true)
@@ -89,8 +89,8 @@ model Article {
   id             String         @id @default(cuid())
   title          String
   slug           String         @unique
-  excerpt        String?
-  body           String
+  excerpt        String?        @db.Text
+  body           String         @db.LongText
   featuredImage  String?
   publishedAt    DateTime?
   updatedAt      DateTime       @updatedAt
@@ -100,7 +100,7 @@ model Article {
   isFeatured     Boolean        @default(false)
   isBreaking     Boolean        @default(false)
   seoTitle       String?
-  seoDescription String?
+  seoDescription String?        @db.Text
   seoKeywords    String?
   sharingImage   String?
   authorId       String
@@ -138,7 +138,7 @@ model Video {
   id           String        @id @default(cuid())
   title        String
   slug         String        @unique
-  description  String?
+  description  String?       @db.Text
   thumbnailUrl String?
   videoUrl     String?
   videoType    VideoType     @default(YOUTUBE)
@@ -175,7 +175,7 @@ model Media {
 model BreakingNews {
   id        String    @id @default(cuid())
   headline  String
-  content   String?
+  content   String?   @db.Text
   isActive  Boolean   @default(true)
   priority  Int       @default(0)
   startsAt  DateTime?
@@ -224,7 +224,7 @@ model LiveStreamSettings {
   streamUrl    String?
   streamType   StreamType @default(HLS)
   title        String?
-  description  String?
+  description  String?    @db.Text
   thumbnailUrl String?
   isLive       Boolean    @default(false)
   isVisible    Boolean    @default(true)
@@ -235,7 +235,7 @@ model SocialPost {
   id        String         @id @default(cuid())
   platform  SocialPlatform
   url       String
-  caption   String?
+  caption   String?        @db.Text
   isActive  Boolean        @default(true)
   order     Int            @default(0)
   createdAt DateTime       @default(now())
@@ -280,7 +280,7 @@ model SiteSettings {
   id                    String   @id @default(cuid())
   siteName              String   @default("Letus TV")
   tagline               String   @default("Let's Watch. Let's Know. Let's Connect.")
-  description           String?
+  description           String?  @db.Text
   logoUrl               String?
   faviconUrl            String?
   contactEmail          String?
@@ -292,17 +292,17 @@ model SiteSettings {
   tiktokUrl             String?
   twitterUrl            String?
   googleAnalyticsId     String?
-  footerText            String?
+  footerText            String?  @db.Text
   seoDefaultTitle       String?
-  seoDefaultDescription String?
+  seoDefaultDescription String?  @db.Text
   conversationCtaEnabled    Boolean  @default(false)
   conversationCtaHeading    String?
-  conversationCtaText       String?
+  conversationCtaText       String?  @db.Text
   conversationCtaUrl        String?
   conversationCtaButtonText String?
   audioRoomsEnabled         Boolean  @default(false)
   audioRoomsHeading         String?
-  audioRoomsText            String?
+  audioRoomsText            String?  @db.Text
   updatedAt             DateTime @updatedAt
 }
 
@@ -311,7 +311,7 @@ model ContactMessage {
   name      String
   email     String
   subject   String?
-  message   String
+  message   String   @db.Text
   createdAt DateTime @default(now())
   isRead    Boolean  @default(false)
 
