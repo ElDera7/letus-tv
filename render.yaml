@@ -1,3 +1,9 @@
+databases:
+  - name: letus-db
+    plan: free
+    databaseName: letustv
+    user: letus
+
 services:
   - type: web
     name: letus-tv
@@ -13,12 +19,14 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: letus-db
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_EMAIL
         value: admin@letustv.com
       - key: ADMIN_PASSWORD
-        sync: false
+        value: AdminLetus2026!
       - key: NEXT_PUBLIC_SITE_URL
-        sync: false
+        value: https://letus-tv.onrender.com
